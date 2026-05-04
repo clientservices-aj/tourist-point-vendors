@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Vendor — Tourist Point Belize</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ── Paste your Supabase details here ──────────────────────────
+  const SUPABASE_URL      = 'https://ifzjwuhfrsssnzvafuzl.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlmemp3dWhmcnNzc256dmFmdXpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NDgzMTgsImV4cCI6MjA5MzMyNDMxOH0.NmH78BGKikJGH9t1t-05jlTK5K2Mt6YxspsJIheh59k';
+  // ──────────────────────────────────────────────────────────────
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: sans-serif; font-size: 15px; background: #f5f5f5; color: #111; padding: 24px 16px 60px; }
+  .wrap { max-width: 700px; margin: 0 auto; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 32px 28px; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .subtitle { color: #555; font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 15px; font-weight: 600; margin: 24px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #eee; }
+  .row { display: grid; gap: 14px; margin-bottom: 14px; }
+  .row.col2 { grid-template-columns: 1fr 1fr; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  label { font-size: 13px; font-weight: 500; color: #333; }
+  label .req { color: #c00; }
+  input, select, textarea { padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; font-family: sans-serif; width: 100%; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #0077cc; }
+  input[readonly] { background: #f5f5f5; color: #555; cursor: default; }
+  textarea { resize: vertical; min-height: 70px; }
+  .service-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  .service-table th { font-size: 12px; color: #555; text-align: left; padding: 4px 6px; background: #f8f8f8; border: 1px solid #e0e0e0; }
+  .service-table td { padding: 4px; border: 1px solid #e0e0e0; }
+  .service-table td input { border: none; padding: 5px; font-size: 13px; width: 100%; background: transparent; }
+  .service-table td input:focus { outline: 1px solid #0077cc; }
+  .add-btn { background: none; border: 1px dashed #aaa; border-radius: 4px; padding: 5px 12px; font-size: 13px; color: #555; cursor: pointer; margin-top: 4px; }
+  .add-btn:hover { background: #f0f0f0; }
+  .del-btn { background: none; border: none; color: #c00; font-size: 16px; cursor: pointer; padding: 0 4px; }
+  .social-row { display: grid; grid-template-columns: 150px 1fr 24px; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .submit-btn { width: 100%; padding: 12px; background: #0077cc; color: #fff; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 28px; }
+  .submit-btn:hover { background: #005fa3; }
+  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+  .msg { padding: 12px 16px; border-radius: 5px; margin-top: 16px; font-size: 14px; display: none; }
+  .msg.success { background: #e6f4ea; border: 1px solid #4caf50; color: #2e7d32; }
+  .msg.error { background: #fdecea; border: 1px solid #f44336; color: #b71c1c; }
+  .note { font-size: 12px; color: #888; }
+  .upload-group { margin-bottom: 14px; }
+  .upload-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+  .upload-pick-btn { display: inline-block; padding: 7px 16px; border: 1px solid #0077cc; border-radius: 5px; background: #f0f7ff; color: #0077cc; font-size: 13px; cursor: pointer; white-space: nowrap; }
+  .upload-pick-btn:hover { background: #dceeff; }
+  .upload-pick-btn input[type=file] { display: none; }
+  .file-status { font-size: 12px; color: #666; }
+  .file-status.has-files { color: #2e7d32; }
+  @media (max-width: 520px) {
+    .row.col2 { grid-template-columns: 1fr; }
+    .social-row { grid-template-columns: 1fr 1fr 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Activity Vendor Registration</h1>
+  <p class="subtitle">Tourist Point Belize — fill in your details to get listed as an activity provider.</p>
+
+  <form id="form" novalidate>
+
+    <h2>Contact information</h2>
+    <div class="row col2">
+      <div class="field">
+        <label>Vendor / contact name <span class="req">*</span></label>
+        <input name="vendor_name" required placeholder="e.g. John Flowers">
+      </div>
+      <div class="field">
+        <label>Business name <span class="req">*</span></label>
+        <input name="business_name" required placeholder="e.g. Belize Reef Adventures">
+      </div>
+    </div>
+    <div class="row col2">
+      <div class="field">
+        <label>Email address <span class="req">*</span></label>
+        <input name="email" type="email" required placeholder="e.g. john@belizereef.com">
+      </div>
+      <div class="field">
+        <label>Phone number <span class="req">*</span></label>
+        <input name="phone" required placeholder="e.g. +501 600-1234 or +1 (713) 555-0100">
+      </div>
+    </div>
+
+    <h2>Location &amp; address</h2>
+    <div class="row col2">
+      <div class="field">
+        <label>City / Area <span class="req">*</span></label>
+        <input name="location" required placeholder="e.g. San Pedro, Ambergris Caye">
+      </div>
+      <div class="field">
+        <label>Country</label>
+        <input name="country" value="Belize" readonly>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Full address</label>
+        <input name="address" placeholder="e.g. 14 Barrier Reef Drive, San Pedro Town, Belize">
+      </div>
+    </div>
+
+    <h2>Media assets</h2>
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:5px;padding:14px 16px;font-size:14px;color:#555;">
+      📲 Please send your <strong>business logo, photos and videos</strong> via WhatsApp after submitting this form. Our team will reach out to collect them.
+    </div>
+
+    <h2>Services offered</h2>
+    <p class="note" style="margin-bottom:10px;">Add each activity / service you offer.</p>
+    <table class="service-table">
+      <thead>
+        <tr>
+          <th style="width:33%">Service name</th>
+          <th style="width:20%">Price</th>
+          <th style="width:27%">Days &amp; hours</th>
+          <th style="width:13%">Min persons</th>
+          <th style="width:7%"></th>
+        </tr>
+      </thead>
+      <tbody id="services-body">
+        <tr>
+          <td><input placeholder="e.g. Snorkeling trip"></td>
+          <td><input placeholder="e.g. BZD $100/person"></td>
+          <td><input placeholder="e.g. Daily 7:00–14:00"></td>
+          <td><input type="number" min="1" placeholder="4"></td>
+          <td><button type="button" class="del-btn" onclick="delRow(this)">×</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button" class="add-btn" onclick="addService()">+ Add service</button>
+
+    <h2>Online presence</h2>
+    <div class="row" style="margin-bottom:10px;">
+      <div class="field">
+        <label>Website URL</label>
+        <input name="website" type="url" placeholder="e.g. https://belizereefadventures.com">
+      </div>
+    </div>
+    <p style="font-size:13px;color:#333;margin-bottom:8px;font-weight:500;">Social media accounts</p>
+    <div id="socials-wrap">
+      <div class="social-row">
+        <select>
+          <option>Instagram</option><option>Facebook</option><option>TikTok</option>
+          <option>YouTube</option><option>Twitter/X</option><option>LinkedIn</option>
+          <option>TripAdvisor</option>
+        </select>
+        <input placeholder="e.g. https://tripadvisor.com/attraction/belize or @handle">
+        <button type="button" class="del-btn" onclick="delSocial(this)">×</button>
+      </div>
+    </div>
+    <button type="button" class="add-btn" onclick="addSocial()">+ Add social account</button>
+
+    <button type="submit" class="submit-btn" id="submit-btn">Submit registration</button>
+    <div class="msg" id="msg"></div>
+
+  </form>
+</div>
+
+<script>
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function addService() {
+  const tb = document.getElementById('services-body');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><input placeholder="e.g. Fishing trip"></td><td><input placeholder="e.g. BZD $150/person"></td><td><input placeholder="e.g. Mon–Sat 6:00–12:00"></td><td><input type="number" min="1" placeholder="2"></td><td><button type="button" class="del-btn" onclick="delRow(this)">×</button></td>`;
+  tb.appendChild(tr);
+}
+
+function delRow(btn) {
+  const rows = document.getElementById('services-body').querySelectorAll('tr');
+  if (rows.length > 1) btn.closest('tr').remove();
+}
+
+function addSocial() {
+  const wrap = document.getElementById('socials-wrap');
+  const div = document.createElement('div');
+  div.className = 'social-row';
+  div.innerHTML = `<select><option>Instagram</option><option>Facebook</option><option>TikTok</option><option>YouTube</option><option>Twitter/X</option><option>LinkedIn</option><option>TripAdvisor</option></select><input placeholder="e.g. @belizereef or full URL"><button type="button" class="del-btn" onclick="delSocial(this)">×</button>`;
+  wrap.appendChild(div);
+}
+
+function delSocial(btn) { btn.closest('.social-row').remove(); }
+
+function getServices() {
+  return Array.from(document.querySelectorAll('#services-body tr')).map(r => {
+    const inputs = r.querySelectorAll('input');
+    return { name: inputs[0].value.trim(), price: inputs[1].value.trim(), hours: inputs[2].value.trim(), min_persons: inputs[3].value.trim() };
+  }).filter(s => s.name);
+}
+
+function getSocials() {
+  return Array.from(document.querySelectorAll('#socials-wrap .social-row')).map(r => {
+    const val = r.querySelector('input').value.trim();
+    return val ? { platform: r.querySelector('select').value, handle: val } : null;
+  }).filter(Boolean);
+}
+
+document.getElementById('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById('submit-btn');
+
+  const required = ['vendor_name', 'business_name', 'email', 'phone', 'location'];
+  for (const f of required) {
+    if (!form[f].value.trim()) {
+      showMsg('Please fill in all required fields (marked with *).', 'error');
+      form[f].focus();
+      return;
+    }
+  }
+
+  btn.disabled = true;
+  showMsg('', '');
+
+  btn.textContent = 'Saving…';
+
+  const { error } = await db.from('vendors').insert([{
+    type: 'activity',
+    vendor_name: form.vendor_name.value.trim(),
+    business_name: form.business_name.value.trim(),
+    email: form.email.value.trim(),
+    phone: form.phone.value.trim(),
+    location: form.location.value.trim(),
+    country: 'Belize',
+    address: form.address.value.trim(),
+    logo_url: '',
+    photos_url: '',
+    videos_url: '',
+    website: form.website.value.trim(),
+    services: getServices(),
+    socials: getSocials(),
+  }]);
+
+  if (error) {
+    showMsg('Submission failed: ' + error.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Submit registration';
+  } else {
+    btn.style.display = 'none';
+    showMsg('Thank you! Your registration has been submitted. We will be in touch shortly.', 'success');
+  }
+});
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + (type || '');
+  el.style.display = text ? 'block' : 'none';
+  if (text) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+</body>
+</html>

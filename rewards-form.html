@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rewards Vendor — Tourist Point Belize</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ── Paste your Supabase details here ──────────────────────────
+  const SUPABASE_URL      = 'https://ifzjwuhfrsssnzvafuzl.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlmemp3dWhmcnNzc256dmFmdXpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NDgzMTgsImV4cCI6MjA5MzMyNDMxOH0.NmH78BGKikJGH9t1t-05jlTK5K2Mt6YxspsJIheh59k';
+  // ──────────────────────────────────────────────────────────────
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: sans-serif; font-size: 15px; background: #f5f5f5; color: #111; padding: 24px 16px 60px; }
+  .wrap { max-width: 700px; margin: 0 auto; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 32px 28px; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .subtitle { color: #555; font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 15px; font-weight: 600; margin: 24px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #eee; }
+  .row { display: grid; gap: 14px; margin-bottom: 14px; }
+  .row.col2 { grid-template-columns: 1fr 1fr; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  label { font-size: 13px; font-weight: 500; color: #333; }
+  label .req { color: #c00; }
+  input, select, textarea { padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; font-family: sans-serif; width: 100%; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #0077cc; }
+  input[readonly] { background: #f5f5f5; color: #555; cursor: default; }
+  textarea { resize: vertical; min-height: 60px; }
+  .biz-card { border: 1px solid #ddd; border-radius: 6px; padding: 18px; margin-bottom: 14px; background: #fafafa; }
+  .biz-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .biz-title { font-weight: 600; font-size: 15px; }
+  .rem-btn { background: none; border: 1px solid #e0e0e0; border-radius: 4px; padding: 4px 10px; font-size: 13px; color: #c00; cursor: pointer; }
+  .rem-btn:hover { background: #fdecea; }
+  .offer-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  .offer-table th { font-size: 12px; color: #555; text-align: left; padding: 4px 6px; background: #f0f0f0; border: 1px solid #e0e0e0; }
+  .offer-table td { padding: 4px; border: 1px solid #e0e0e0; }
+  .offer-table td input, .offer-table td select { border: none; padding: 5px; font-size: 13px; width: 100%; background: transparent; }
+  .offer-table td input:focus, .offer-table td select:focus { outline: 1px solid #0077cc; }
+  .add-btn { background: none; border: 1px dashed #aaa; border-radius: 4px; padding: 5px 12px; font-size: 13px; color: #555; cursor: pointer; margin-top: 4px; }
+  .add-btn:hover { background: #f0f0f0; }
+  .del-btn { background: none; border: none; color: #c00; font-size: 16px; cursor: pointer; padding: 0 4px; }
+  .social-row { display: grid; grid-template-columns: 150px 1fr 24px; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .add-biz-btn { width: 100%; padding: 10px; background: none; border: 1px dashed #0077cc; border-radius: 5px; color: #0077cc; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 16px; }
+  .add-biz-btn:hover { background: #f0f7ff; }
+  .submit-btn { width: 100%; padding: 12px; background: #0077cc; color: #fff; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 28px; }
+  .submit-btn:hover { background: #005fa3; }
+  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+  .msg { padding: 12px 16px; border-radius: 5px; margin-top: 16px; font-size: 14px; display: none; }
+  .msg.success { background: #e6f4ea; border: 1px solid #4caf50; color: #2e7d32; }
+  .msg.error { background: #fdecea; border: 1px solid #f44336; color: #b71c1c; }
+  .note { font-size: 12px; color: #888; }
+  .upload-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+  .upload-pick-btn { display: inline-block; padding: 7px 14px; border: 1px solid #0077cc; border-radius: 5px; background: #f0f7ff; color: #0077cc; font-size: 13px; cursor: pointer; white-space: nowrap; }
+  .upload-pick-btn:hover { background: #dceeff; }
+  .upload-pick-btn input[type=file] { display: none; }
+  .file-status { font-size: 12px; color: #666; }
+  .file-status.has-files { color: #2e7d32; }
+  @media (max-width: 520px) {
+    .row.col2 { grid-template-columns: 1fr; }
+    .social-row { grid-template-columns: 1fr 1fr 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Rewards Vendor Registration</h1>
+  <p class="subtitle">Tourist Point Belize Rewards App — register your business(es) to offer exclusive deals to our users.</p>
+
+  <form id="form" novalidate>
+
+    <h2>Your contact information</h2>
+    <div class="row col2">
+      <div class="field">
+        <label>Your name <span class="req">*</span></label>
+        <input name="vendor_name" required placeholder="e.g. Maria Castillo">
+      </div>
+      <div class="field">
+        <label>Email address <span class="req">*</span></label>
+        <input name="email" type="email" required placeholder="e.g. maria@belizehotel.com">
+      </div>
+    </div>
+    <div class="row col2">
+      <div class="field">
+        <label>Phone number <span class="req">*</span></label>
+        <input name="phone" required placeholder="e.g. +501 226-1234 or +1 (713) 555-0100">
+      </div>
+      <div class="field"></div>
+    </div>
+
+    <h2>Your business(es)</h2>
+    <p class="note" style="margin-bottom:14px;">You can add multiple businesses. Each one will be listed separately in the rewards app.</p>
+
+    <div id="businesses-wrap"></div>
+    <button type="button" class="add-biz-btn" onclick="addBusiness()">+ Add another business</button>
+
+    <button type="submit" class="submit-btn" id="submit-btn">Submit registration</button>
+    <div class="msg" id="msg"></div>
+
+  </form>
+</div>
+
+<script>
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let bizCount = 0;
+
+function makeBusinessCard() {
+  bizCount++;
+  const id = bizCount;
+  const div = document.createElement('div');
+  div.className = 'biz-card';
+  div.dataset.bizId = id;
+  div.innerHTML = `
+    <div class="biz-header">
+      <span class="biz-title">Business ${id}</span>
+      ${id > 1 ? `<button type="button" class="rem-btn" onclick="removeBiz(this)">Remove</button>` : ''}
+    </div>
+
+    <div class="row col2" style="margin-bottom:14px;">
+      <div class="field">
+        <label>Business name <span class="req">*</span></label>
+        <input class="biz-name" required placeholder="e.g. Caye Caulker Beach Hotel">
+      </div>
+      <div class="field">
+        <label>City / Area <span class="req">*</span></label>
+        <input class="biz-location" required placeholder="e.g. Caye Caulker, Belize">
+      </div>
+    </div>
+    <div class="row col2" style="margin-bottom:14px;">
+      <div class="field">
+        <label>Country</label>
+        <input value="Belize" readonly>
+      </div>
+      <div class="field">
+        <label>Full address</label>
+        <input class="biz-address" placeholder="e.g. Front Street, Caye Caulker">
+      </div>
+    </div>
+
+    <p style="font-size:13px;color:#333;margin-bottom:8px;font-weight:500;">Media assets</p>
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:5px;padding:12px 14px;font-size:13px;color:#555;margin-bottom:14px;">
+      📲 Please send your <strong>business logo and images</strong> for this business via WhatsApp after submitting this form.
+    </div>
+
+    <p style="font-size:13px;color:#333;margin-bottom:6px;font-weight:500;">Exclusive offers / discounts</p>
+    <table class="offer-table">
+      <thead>
+        <tr>
+          <th style="width:22%">Offer type</th>
+          <th style="width:42%">Description</th>
+          <th style="width:26%">Days &amp; hours</th>
+          <th style="width:10%"></th>
+        </tr>
+      </thead>
+      <tbody class="offers-body">
+        <tr>
+          <td><select><option>% discount</option><option>Buy 1 get 1</option><option>Flat amount off</option><option>Free item</option><option>Other</option></select></td>
+          <td><input placeholder="e.g. 10% off room booking"></td>
+          <td><input placeholder="e.g. Daily 8:00–20:00"></td>
+          <td><button type="button" class="del-btn" onclick="delOfferRow(this)">×</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button type="button" class="add-btn" onclick="addOfferRow(this)">+ Add offer</button>
+
+    <div style="margin-top:16px;">
+      <div class="field" style="margin-bottom:10px;">
+        <label>Website URL</label>
+        <input class="biz-website" type="url" placeholder="e.g. https://cayecaulkerhotel.com">
+      </div>
+      <p style="font-size:13px;color:#333;margin-bottom:8px;font-weight:500;">Social media accounts</p>
+      <div class="socials-wrap">
+        <div class="social-row">
+          <select><option>Instagram</option><option>Facebook</option><option>TikTok</option><option>YouTube</option><option>Twitter/X</option><option>LinkedIn</option><option>TripAdvisor</option></select>
+          <input placeholder="e.g. https://tripadvisor.com/hotel/belize or @handle">
+          <button type="button" class="del-btn" onclick="delSocial(this)">×</button>
+        </div>
+      </div>
+      <button type="button" class="add-btn" onclick="addSocialInCard(this)">+ Add social account</button>
+    </div>
+  `;
+  return div;
+}
+
+function addBusiness() {
+  document.getElementById('businesses-wrap').appendChild(makeBusinessCard());
+}
+
+function removeBiz(btn) { btn.closest('.biz-card').remove(); }
+
+function addOfferRow(btn) {
+  const tbody = btn.previousElementSibling.querySelector('tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><select><option>% discount</option><option>Buy 1 get 1</option><option>Flat amount off</option><option>Free item</option><option>Other</option></select></td><td><input placeholder="e.g. 1+1 rum punch"></td><td><input placeholder="e.g. Mon–Fri 17:00–21:00"></td><td><button type="button" class="del-btn" onclick="delOfferRow(this)">×</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function delOfferRow(btn) {
+  const tbody = btn.closest('tbody');
+  if (tbody.querySelectorAll('tr').length > 1) btn.closest('tr').remove();
+}
+
+function addSocialInCard(btn) {
+  const wrap = btn.previousElementSibling;
+  const div = document.createElement('div');
+  div.className = 'social-row';
+  div.innerHTML = `<select><option>Instagram</option><option>Facebook</option><option>TikTok</option><option>YouTube</option><option>Twitter/X</option><option>LinkedIn</option><option>TripAdvisor</option></select><input placeholder="e.g. @belizehotel or full URL"><button type="button" class="del-btn" onclick="delSocial(this)">×</button>`;
+  wrap.appendChild(div);
+}
+
+function delSocial(btn) { btn.closest('.social-row').remove(); }
+
+async function getBusinessData() {
+  const cards = document.querySelectorAll('.biz-card');
+  const businesses = [];
+  for (const card of cards) {
+    const offers = Array.from(card.querySelectorAll('.offers-body tr')).map(r => {
+      const cells = r.querySelectorAll('select, input');
+      return { type: cells[0].value, description: cells[1].value.trim(), hours: cells[2].value.trim() };
+    }).filter(o => o.description);
+
+    const socials = Array.from(card.querySelectorAll('.social-row')).map(r => ({
+      platform: r.querySelector('select').value,
+      handle: r.querySelector('input').value.trim()
+    })).filter(s => s.handle);
+
+    businesses.push({
+      name: card.querySelector('.biz-name').value.trim(),
+      location: card.querySelector('.biz-location').value.trim(),
+      address: card.querySelector('.biz-address').value.trim(),
+      country: 'Belize',
+      logo_url: '',
+      images_url: '',
+      website: card.querySelector('.biz-website').value.trim(),
+      offers,
+      socials
+    });
+  }
+  return businesses;
+}
+
+document.getElementById('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById('submit-btn');
+
+  if (!form.vendor_name.value.trim() || !form.email.value.trim() || !form.phone.value.trim()) {
+    showMsg('Please fill in all required contact fields.', 'error'); return;
+  }
+
+  const cards = document.querySelectorAll('.biz-card');
+  for (const card of cards) {
+    if (!card.querySelector('.biz-name').value.trim() || !card.querySelector('.biz-location').value.trim()) {
+      showMsg('Each business needs a name and city/location.', 'error'); return;
+    }
+  }
+
+  btn.disabled = true;
+  showMsg('', '');
+
+  const businesses = await getBusinessData();
+  btn.textContent = 'Saving…';
+
+  const { error } = await db.from('vendors').insert([{
+    type: 'rewards',
+    vendor_name: form.vendor_name.value.trim(),
+    email: form.email.value.trim(),
+    phone: form.phone.value.trim(),
+    business_name: businesses.map(b => b.name).join(', '),
+    location: businesses.map(b => b.location).join(', '),
+    country: 'Belize',
+    address: businesses[0]?.address || '',
+    logo_url: businesses[0]?.logo_url || '',
+    photos_url: businesses[0]?.images_url || '',
+    videos_url: '',
+    website: businesses[0]?.website || '',
+    services: [],
+    socials: businesses[0]?.socials || [],
+    businesses,
+  }]);
+
+  if (error) {
+    showMsg('Submission failed: ' + error.message, 'error');
+    btn.disabled = false;
+    btn.textContent = 'Submit registration';
+  } else {
+    btn.style.display = 'none';
+    showMsg('Thank you! Your registration has been submitted. We will be in touch shortly.', 'success');
+  }
+});
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg ' + (type || '');
+  el.style.display = text ? 'block' : 'none';
+  if (text) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+addBusiness();
+</script>
+</body>
+</html>
